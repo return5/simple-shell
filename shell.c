@@ -26,7 +26,7 @@
 
 //--------------------------------------------- prototypes ---------------------------------------------------------
 int findNonWhiteSpace(const char *const str);
-int hashString(unsigned char *str);
+int hashString(char *str);
 char **reSizeArgs(const int buff,char **args);
 int builtIn(const char *const *args);
 char *removeWhiteSpace(const char *const str);
@@ -38,6 +38,7 @@ void parentProcess(const pid_t pid);
 int exitShell(void);
 void printHelp(void);
 void changeDir(const char *const *args);
+void shellLoop(void);
 
 //--------------------------------------------- code ----------------------------------------------------------------
 //prints the help prompt
@@ -59,7 +60,7 @@ void changeDir(const char *const *args) {
 
 //exit the current shell.
 int exitShell(void) {
-
+    return 0;
 }
 
 //returns the index of the first non space or tab character in str.
@@ -107,10 +108,10 @@ char **reSizeArgs(const int buff,char **args) {
 
 //get each token from line and place it into args array
 char **getArgs(const char *const line) {
-    size_t buff = 5;
-    int i       = 0;
-    char **args = malloc(sizeof(char *) * buff);
-    char *token = strtok((char *)line,DEL);
+    size_t buff    = 5;
+    unsigned int i = 0;
+    char **args    = malloc(sizeof(char *) * buff);
+    char *token    = strtok((char *)line,DEL);
     if(token == NULL) {
         exit(EXIT_FAILURE);
     }
@@ -126,10 +127,10 @@ char **getArgs(const char *const line) {
 }
 
 //hash string using DJB2.
-int hashString(unsigned char *str) {
+int hashString(char *str) {
     unsigned long hash = 5381;
     int c;
-    while (c = *str++) {
+    while ((c = *str++)) {
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
     }
     return hash;
@@ -139,8 +140,7 @@ int hashString(unsigned char *str) {
 int builtIn(const char *const * args) {
     switch(hashString((char *)args[0])) {
         case EXIT:
-            exitShell();
-            return 0;
+            return exitShell();
         case HELP:
             printHelp();
             return 1;
