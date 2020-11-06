@@ -25,11 +25,9 @@
 #define CD 5863276       //hash value for "cd"
 
 //--------------------------------------------- prototypes ---------------------------------------------------------
-int findNonWhiteSpace(const char *const str);
 int hashString(char *str);
 char **reSizeArgs(const int buff,char **args);
 int builtIn(const char *const *args);
-char *removeWhiteSpace(const char *const str);
 char *getLine(void);
 char **getArgs(const char *const line);
 int execCmd(const char *const *args);
@@ -63,34 +61,12 @@ int exitShell(void) {
     return 0;
 }
 
-//returns the index of the first non space or tab character in str.
-int findNonWhiteSpace(const char *const str) {
-    unsigned int i = 0;
-    while(str[i] == ' ' || str[i] == '\t') {
-        i++;
-    }
-    return i;
-}
-
-//return string without any leading whtie spaces or tabs. 
-char *removeWhiteSpace(const char *const str) {
-    const int first = findNonWhiteSpace(str);
-    if(first == 0 ) {
-        return (char *)str;
-    }
-        const size_t size = strlen(str + first) * sizeof(char);
-        char *new_str     = malloc(size);
-        strncpy(new_str,str + first,size);
-        free((void *)str);
-        return new_str;
-}
-
 //get a line of input from terminal
 char *getLine(void) {
     size_t buff = 0;
     char *str   = NULL;
     if(getline(&str,&buff,stdin) != -1) {
-        return removeWhiteSpace(str);
+        return str;
     }
     else {
         exit(EXIT_FAILURE);
@@ -196,9 +172,9 @@ int execCmd(const char *const *args) {
 void shellLoop(void) {
      int status = 1;
     do {
-         printf(">");
+        printf(">");
         const char *const line   = getLine();
-        const char *const * args = (const char *const *)getArgs(line);
+        const char *const *args  = (const char *const *)getArgs(line);
         status                   = execCmd(args);
         free((void *)line);
         free((void *)args);
@@ -209,3 +185,4 @@ int main(void) {
     shellLoop();
     return EXIT_SUCCESS;
 }
+
