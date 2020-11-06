@@ -108,10 +108,10 @@ char **reSizeArgs(const int buff,char **args) {
 
 //get each token from line and place it into args array
 char **getArgs(const char *const line) {
-    size_t buff    = 5;
-    unsigned int i = 0;
-    char **args    = malloc(sizeof(char *) * buff);
-    char *token    = strtok((char *)line,DEL);
+    size_t buff  = 5;
+    size_t i     = 0;
+    char **args  = malloc(sizeof(char *) * buff);
+    char *token  = strtok((char *)line,DEL);
     if(token == NULL) {
         exit(EXIT_FAILURE);
     }
